@@ -20,7 +20,6 @@ type PageProps = {
   params: {
     id: string;
   };
-  searchParams?: Record<string, string | string[] | undefined>;
 };
 
 export default function EditAccountPage({ params }: PageProps) {
@@ -64,8 +63,7 @@ export default function EditAccountPage({ params }: PageProps) {
       });
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Hesap güncellenemedi');
+        throw new Error('Hesap güncellenemedi');
       }
 
       router.push('/admin/accounts');
@@ -76,163 +74,99 @@ export default function EditAccountPage({ params }: PageProps) {
     }
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setAccount(prev => prev ? { ...prev, [name]: value } : null);
-  };
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   if (!account) {
-    return (
-      <AdminLayout>
-        <div className="p-8">
-          {error ? (
-            <div className="text-red-600">{error}</div>
-          ) : (
-            <div className="flex items-center justify-center h-[calc(100vh-200px)]">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
-          )}
-        </div>
-      </AdminLayout>
-    );
+    return <div>Yükleniyor...</div>;
   }
 
   return (
     <AdminLayout>
-      <div className="p-8">
-        <h1 className="text-2xl font-bold mb-6">{t('admin.editAccount')}</h1>
-
-        <form onSubmit={handleSubmit} className="max-w-2xl bg-white rounded-lg shadow p-6">
-          {error && (
-            <div className="mb-4 p-4 text-red-700 bg-red-100 rounded-lg">
-              {error}
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('admin.rank')} *
-              </label>
-              <input
-                type="text"
-                name="rank"
-                value={account.rank}
-                onChange={handleChange}
-                required
-                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('admin.rankImage')}
-              </label>
-              <input
-                type="text"
-                name="rankImage"
-                value={account.rankImage || ''}
-                onChange={handleChange}
-                placeholder="/ranks/silver.png"
-                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('admin.price')} *
-              </label>
-              <input
-                type="number"
-                name="price"
-                value={account.price}
-                onChange={handleChange}
-                required
-                min="0"
-                step="0.01"
-                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('admin.contactInfo')} *
-              </label>
-              <input
-                type="text"
-                name="contactInfo"
-                value={account.contactInfo}
-                onChange={handleChange}
-                required
-                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('admin.description')}
-              </label>
-              <textarea
-                name="description"
-                value={account.description || ''}
-                onChange={handleChange}
-                rows={4}
-                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('admin.images')}
-              </label>
-              <input
-                type="text"
-                name="images"
-                value={account.images}
-                onChange={handleChange}
-                placeholder="[]"
-                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-              <p className="mt-1 text-sm text-gray-500">
-                {t('admin.imagesHelp')}
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('admin.status')}
-              </label>
-              <select
-                name="status"
-                value={account.status}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="active">{t('admin.status_active')}</option>
-                <option value="sold">{t('admin.status_sold')}</option>
-                <option value="pending">{t('admin.status_pending')}</option>
-              </select>
-            </div>
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-2xl font-bold mb-6">{t('editAccount')}</h1>
+        <form onSubmit={handleSubmit} className="max-w-lg mx-auto">
+          <div className="mb-4">
+            <label htmlFor="rank" className="block text-sm font-medium text-gray-700">
+              {t('rank')}
+            </label>
+            <input
+              type="text"
+              id="rank"
+              value={account.rank}
+              onChange={(e) => setAccount({ ...account, rank: e.target.value })}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              required
+            />
           </div>
-
-          <div className="mt-6 flex items-center justify-end gap-4">
-            <button
-              type="button"
-              onClick={() => router.back()}
-              className="px-4 py-2 text-gray-700 hover:text-gray-900"
+          <div className="mb-4">
+            <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+              {t('price')}
+            </label>
+            <input
+              type="number"
+              id="price"
+              value={account.price}
+              onChange={(e) => setAccount({ ...account, price: Number(e.target.value) })}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="contactInfo" className="block text-sm font-medium text-gray-700">
+              {t('contactInfo')}
+            </label>
+            <input
+              type="text"
+              id="contactInfo"
+              value={account.contactInfo}
+              onChange={(e) => setAccount({ ...account, contactInfo: e.target.value })}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+              {t('description')}
+            </label>
+            <textarea
+              id="description"
+              value={account.description || ''}
+              onChange={(e) => setAccount({ ...account, description: e.target.value })}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              rows={4}
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+              {t('status')}
+            </label>
+            <select
+              id="status"
+              value={account.status}
+              onChange={(e) => setAccount({ ...account, status: e.target.value })}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              required
             >
-              {t('admin.cancel')}
-            </button>
+              <option value="active">{t('active')}</option>
+              <option value="inactive">{t('inactive')}</option>
+            </select>
+          </div>
+          <div className="flex items-center justify-between">
             <button
               type="submit"
               disabled={loading}
-              className={`px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 ${
-                loading ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
+              className="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
-              {loading ? t('admin.saving') : t('admin.save')}
+              {loading ? t('saving') : t('save')}
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push('/admin/accounts')}
+              className="text-gray-600 hover:text-gray-900"
+            >
+              {t('cancel')}
             </button>
           </div>
         </form>
