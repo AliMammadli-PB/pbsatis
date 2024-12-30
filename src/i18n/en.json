@@ -1,0 +1,12 @@
+{
+  "home": {
+    "title": "Point Blank Account Sales",
+    "description": "Welcome to the trusted Point Blank account trading platform. Buy or sell your accounts at the best prices.",
+    "viewAccounts": "View Accounts"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "tryAgain": "Try Again"
+  }
+}

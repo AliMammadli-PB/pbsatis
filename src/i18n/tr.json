@@ -1,0 +1,12 @@
+{
+  "home": {
+    "title": "Point Blank Hesap Satış",
+    "description": "Güvenilir Point Blank hesap alım satım platformuna hoş geldiniz. En uygun fiyatlarla hesaplarınızı alın veya satın.",
+    "viewAccounts": "Hesapları Görüntüle"
+  },
+  "common": {
+    "loading": "Yükleniyor...",
+    "error": "Hata",
+    "tryAgain": "Tekrar Dene"
+  }
+}

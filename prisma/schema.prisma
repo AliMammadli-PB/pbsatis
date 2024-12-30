@@ -1,0 +1,28 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id    Int    @id @default(autoincrement())
+  name  String
+  email String @unique
+}
+
+model Account {
+  id          String   @id @default(uuid())
+  rank        String   @default("")  
+  rankImage   String
+  price       Float
+  currency    String   @default("AZN")
+  description String   @default("")
+  status      String   @default("available")
+  images      String   @default("[]") // Stored as JSON string
+  contactInfo String   @default("{}")  // Stored as JSON string
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
